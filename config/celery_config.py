@@ -7,3 +7,5 @@ beat_schedule = {
     }
 
 }
+timezone = "Asia/Shanghai"
+enable_utc = False

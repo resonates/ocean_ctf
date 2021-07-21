@@ -19,7 +19,7 @@ DB_NAME = 'ocean'
 # cache
 REDIS_HOST = '' or env.get("REDIS_HOST")
 REDIS_PASSWORD = '' or env.get("REDIS_PASSWORD")
-REDIS_URL = 'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379'.format(REDIS_HOST=REDIS_HOST,REDIS_PASSWORD=REDIS_PASSWORD)
+REDIS_URL = 'redis://:{REDIS_PASSWORD}@{REDIS_HOST}:6379'.format(REDIS_HOST=REDIS_HOST, REDIS_PASSWORD=REDIS_PASSWORD)
 # end cache
 
 # 跨域配置
@@ -55,6 +55,13 @@ LOGGING = {
             'level': logging.NOTSET,
             'stream': 'ext://sys.stdout',
         },
+        'app_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'full',
+            'filename': os.path.join(BASE_DIR, 'logs', 'app.log'),
+            'maxBytes': 100000,
+            'backupCount': 1,
+        },
         'info_file': {
             'class': 'logging.handlers.RotatingFileHandler',
             'formatter': 'full',
@@ -76,6 +83,9 @@ LOGGING = {
         '': {
             'level': 'DEBUG',
             'handlers': ['console'],
+        },
+        'app': {
+            'handlers': ['app_file']
         },
         'werkzeug': {
             'handlers': ['console_mini'],

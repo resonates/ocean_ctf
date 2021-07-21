@@ -3,7 +3,7 @@
 """
 from enum import Enum
 
-from sqlalchemy import Column, String, Boolean, Integer, ForeignKey
+from sqlalchemy import Column, String, Boolean, Integer, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
 
 from app.models.base import MainBase
@@ -60,7 +60,8 @@ class ContainerResource(MainBase):
     container_port = Column(String(64), comment="端口映射", nullable=True)
     addr = Column(String(64), comment="快照主机IP")
     user_id = Column(Integer, ForeignKey('user.id'), comment="关联用户")
-    image_resource = relationship('ImageResource',backref='containers')
+    image_resource = relationship('ImageResource', backref='containers')
+    destroy_time = Column(DateTime, comment="销毁时间")
     # 应该还需要对应用户
 
 

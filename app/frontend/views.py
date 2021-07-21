@@ -1,5 +1,6 @@
 import random
 import string
+from datetime import datetime,timedelta
 
 import docker
 from docker import errors as docker_error
@@ -14,6 +15,7 @@ from app.lib.utils.authlib import create_token
 from app.models.admin import Notice
 from app.models.ctf import ImageResource, ContainerResource, Answer, QuestionFile, Question
 from app.models.user import User
+from app.tasks.ctf import finish_container
 
 bp = Blueprint("view", __name__, url_prefix='')
 
@@ -266,7 +268,7 @@ def question_start(question):
     docker_container = client.containers.get(container_name)
     flag = generate_flag()
     command = "/bin/bash /start.sh '{}'".format(flag)
-    command_response = docker_container.exec_run(cmd=command, detach=True)
+    docker_container.exec_run(cmd=command, detach=True)
     # 创建容器记录
     container = ContainerResource(image_resource_id=image_resource.id, flag=flag)
     container.addr = image_resource.host.ip
@@ -276,9 +278,13 @@ def question_start(question):
     container.container_status = docker_container_response.attrs["State"]["Status"]
     container.container_port = random_port
     container.user_id = user.id
+    # 销毁时间
+    container.destroy_time = datetime.now() + timedelta(minutes=10)
     # 创建容器
     db.session.add(container)
     db.session.commit()
+    # 创建定时任务  到时间后销毁
+    finish_container.apply_async(args=(container.id,),countdown=60*10)
     return jsonify({
         "status": 0
     })
