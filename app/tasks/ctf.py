@@ -5,7 +5,8 @@ from sqlalchemy.orm import sessionmaker
 from app import celery_app
 
 from app import db
-from app.models.ctf import ContainerResource,User
+from app.models.ctf import ContainerResource
+from app.models.user import User
 from docker import errors as docker_error
 import logging
 logger = logging.getLogger('app')

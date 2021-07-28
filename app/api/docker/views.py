@@ -174,6 +174,8 @@ def host_images(host):
     images_list = []
     for im in images:
         attrs = im.attrs
+        if not attrs["RepoTags"]:
+            continue
         tmp = {
             "created": attrs["Created"].split("T")[0],
             "id": attrs["Id"][7:17],

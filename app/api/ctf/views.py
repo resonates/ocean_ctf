@@ -302,7 +302,7 @@ def question_update(pk):
     return jsonify({})
 
 
-@bp.route('/question<int:pk>', methods=['delete'])
+@bp.route('/question/<int:pk>', methods=['DELETE'])
 def question_delete(pk):
     """
                     删除题库  判断是否是动态题库 动态题库删除容器  实体容器 镜像
